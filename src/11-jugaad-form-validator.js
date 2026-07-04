@@ -63,4 +63,68 @@
  */
 export function validateForm(formData) {
   // Your code here
+  const errors={}
+  let isNameCorrect=true
+  if(typeof formData?.name!=="string" ||formData?.name.trim()==="")isNameCorrect=false;
+  if(isNameCorrect){
+    const nameArray=formData.name.trim().split(" ")
+    const firstName=nameArray[0].toLowerCase().split("");
+    if(!firstName.every((e)=>e>='a' && e<='z'))isNameCorrect=false;
+    let SecondName=""
+    if(nameArray[1] && isNameCorrect){
+       SecondName=nameArray[1].toLowerCase().split("");
+      if(!SecondName.every((e)=>e>='a' && e<='z'))isNameCorrect=false;
+    }
+    const totalLenth=firstName.length+SecondName.length
+    if(totalLenth<2 || totalLenth>50)isNameCorrect=false
+  }
+  if(!isNameCorrect)errors.name="Name must be 2-50 characters"
+
+  let isEmailCorrect=true;
+  const email=formData?.email?.trim()
+  if(typeof email!== "string" || email==="")isEmailCorrect=false;
+  if(!isEmailCorrect || !email.includes('@') || !email.includes(('.')))isEmailCorrect=false
+  if(isEmailCorrect){
+    const indexOfat=email.lastIndexOf('@')
+    const firstIndexOfat=email.indexOf('@')
+    const indexOfDot=email.lastIndexOf('.');
+    if(indexOfDot<indexOfat)isEmailCorrect=false;
+    if(firstIndexOfat!==indexOfat)isEmailCorrect=false;
+  }
+  if(!isEmailCorrect)errors.email="Invalid email format"
+
+  const phone=Number(formData?.phone?.trim())
+  let isPhoneCorrect=true
+  if(!Number.isInteger(phone))isPhoneCorrect=false;
+  if(isPhoneCorrect &&  formData.phone.length!==10)isPhoneCorrect=false;
+  if(isPhoneCorrect && !(formData.phone[0]==='6' || formData.phone[0]==='7' || formData.phone[0]==='8' ||
+    formData.phone[0]==='9'
+  ) )isPhoneCorrect=false
+  if(!isPhoneCorrect)errors.phone="Invalid Indian phone number"
+
+  const age=Number(formData?.age)
+  let isAgeCorrect=true
+  if(!Number.isInteger(age)  || age<16 || age>100) isAgeCorrect=false;
+  if(!isAgeCorrect)errors.age="Age must be an integer between 16 and 100"
+
+const pincode=formData?.pincode?.trim()
+let isPincodeCorrect=true
+if(typeof pincode!=="string" || pincode.length!==6)isPincodeCorrect=false
+if(!isPincodeCorrect || !Number.isInteger(Number(pincode)) || pincode[0]==='0')isPincodeCorrect=false
+if(!isPincodeCorrect)errors.pincode="Invalid Indian pincode"
+
+const state=formData.state ?? ""
+let isStateCorrect=true;
+if(state==="")isStateCorrect=false
+if(!isStateCorrect)errors.state="State is required"
+
+const isAgreeCorrect=Boolean(formData.agreeTerms)
+if(!isAgreeCorrect)errors.agreeTerms="Must agree to terms"
+
+let isValid=true
+if(!isAgeCorrect || !isAgreeCorrect || !isEmailCorrect || !isNameCorrect || !isPhoneCorrect ||
+  !isPincodeCorrect || !isStateCorrect)isValid=false
+return{ 
+  isValid: isValid, errors: errors
+}
 }

@@ -42,4 +42,37 @@
  */
 export function generateReportCard(student) {
   // Your code here
+  if(typeof student!=="object" || student===null)return null;
+  if(student.name===undefined || student.name==="") return null
+  if(typeof student.marks!=="object" || Object.keys(student.marks).length==0)return null
+  const validMarks=Object.values(student.marks);
+  const checkMarks=validMarks.filter((e)=>isNaN(e))
+  const highestMarks=Math.max(...validMarks)
+  const lowestMarks=Math.min(...validMarks)
+  if(highestMarks>100 || lowestMarks<0 || checkMarks.length>0)return null;
+  const totalMarks=validMarks.reduce((acc,curr)=>acc+curr,0);
+  const subjects=Object.keys(student.marks);
+  const subjectCount=subjects.length
+  const percentage= parseFloat(((totalMarks / (subjectCount * 100)) * 100).toFixed(2));
+  let grade="";
+  if(percentage>=90)grade="A+"
+  else if(percentage>=80)grade="A"
+  else if(percentage>=70)grade="B"
+  else if(percentage>=60)grade="C"
+  else if(percentage>=40)grade="D"
+  else if(percentage<40)grade="F"
+  else return null
+  const passedSubjects=[]
+  const failedSubjects=[]
+  for(var i=0;i<validMarks.length;i++){
+    if(validMarks[i]>=40)passedSubjects.push(subjects[i])
+    else failedSubjects.push(subjects[i])
+  }
+  const highestSubject=subjects[validMarks.indexOf(highestMarks)]
+  const lowestSubject=subjects[validMarks.indexOf(lowestMarks)]
+
+  return { name: student.name, totalMarks: totalMarks, percentage: percentage, grade: grade,
+    highestSubject: highestSubject, lowestSubject: lowestSubject
+    , passedSubjects: passedSubjects, failedSubjects: failedSubjects,subjectCount: subjectCount }
+  
 }

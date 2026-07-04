@@ -29,6 +29,7 @@
  *
  * @param {number} amount - Base amount before tax
  * @param {string} category - Product category
+
  * @returns {{ baseAmount: number, gstRate: number, gstAmount: number, totalAmount: number } | null}
  *
  * @example
@@ -38,6 +39,34 @@
  *   calculateGST(500, "essential")
  *   // => { baseAmount: 500, gstRate: 0, gstAmount: 0, totalAmount: 500 }
  */
+
 export function calculateGST(amount, category) {
   // Your code here
+  if(amount<=0 || isNaN(amount) || !isFinite(amount))return null
+  if(typeof category!=="string") return null
+  let gst=0;
+  const item=category.toLowerCase()
+  switch(item){
+    case "essential":
+      return { baseAmount: amount, gstRate: 0, gstAmount: 0, totalAmount: amount }
+      break;
+    case "food":
+      gst=parseFloat(((amount * 5) / 100).toFixed(2))
+      return { baseAmount: amount, gstRate: 5, gstAmount: gst, totalAmount: amount+gst }
+      break;
+    case "standard":
+      gst=parseFloat(((amount * 12) / 100).toFixed(2))
+      return { baseAmount: amount, gstRate: 12, gstAmount: gst, totalAmount: amount+gst }
+      break;
+    case "electronics":
+      gst=parseFloat(((amount * 18) / 100).toFixed(2))
+      return { baseAmount: amount, gstRate: 18, gstAmount: gst, totalAmount: amount+gst }
+      break;
+    case "luxury":
+      gst=parseFloat(((amount * 28) / 100).toFixed(2))
+      return { baseAmount: amount, gstRate: 28, gstAmount: gst, totalAmount: amount+gst }
+      break;
+    default:
+      return null
+  }
 }
